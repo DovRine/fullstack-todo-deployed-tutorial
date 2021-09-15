@@ -10,5 +10,9 @@ describe('App', () => {
     const ui = screen.getByTestId('App')
     expect(ui).toHaveClass('App')
   })
+  it('shows a list of todos', () => {
+    render(<App />)
+    screen.getByTestId('TodoList')
+  })
 })
 
