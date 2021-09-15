@@ -1,0 +1,10 @@
+version: '3'
+services:
+  frontend:
+    container_name: todo-frontend
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/public:/app/public
+      - ./frontend/src:/app/src
