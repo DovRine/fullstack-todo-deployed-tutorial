@@ -1,28 +1,37 @@
 import { screen, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import TodoProvider from "../../providers/TodoProvider";
 import { TodoForm } from "..";
+
+function customRender(Component, props) {
+  return render(
+    <TodoProvider values={{ ...props }}>
+      <Component />
+    </TodoProvider>
+  );
+}
 
 describe("TodoForm", () => {
   it("exists", () => {
     expect(typeof TodoForm).toBe("function");
   });
   it('has class "TodoForm"', () => {
-    render(<TodoForm />);
+    customRender(TodoForm, {addTodo: jest.fn()})
     const ui = screen.getByTestId("TodoForm");
     expect(ui).toHaveClass("TodoForm");
   });
   it("has an input for a todo task", () => {
-    render(<TodoForm />);
+    customRender(TodoForm, {addTodo: jest.fn()})
     screen.getByRole("textbox");
   });
   it("has a submit button", () => {
-    render(<TodoForm />);
+    customRender(TodoForm, {addTodo: jest.fn()})
     screen.getByRole("button");
   });
   it("adds a todo", () => {
-    const mockHandleSubmit = jest.fn();
-    render(<TodoForm handleSubmit={mockHandleSubmit} />);
+    const addTodo = jest.fn();
+    customRender(TodoForm, {addTodo})
     const task = "test task";
     const input = screen.getByRole("textbox");
     const btn = screen.getByRole("button");
@@ -30,7 +39,7 @@ describe("TodoForm", () => {
     userEvent.type(input, task);
     btn.click();
 
-    expect(mockHandleSubmit).toHaveBeenCalledTimes(1);
-    expect(mockHandleSubmit).toHaveBeenCalledWith({ task });
+    expect(addTodo).toHaveBeenCalledTimes(1);
+    expect(addTodo).toHaveBeenCalledWith({ task });
   });
 });
