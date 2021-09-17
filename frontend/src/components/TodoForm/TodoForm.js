@@ -3,8 +3,8 @@ import { useTodos } from "../../providers/TodoProvider";
 
 function TodoForm() {
   const { addTodo } = useTodos();
-
   const [task, setTask] = useState("");
+
   function doSubmit(e) {
     e.preventDefault();
     addTodo({ task });

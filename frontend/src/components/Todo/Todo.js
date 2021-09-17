@@ -1,4 +1,5 @@
-import {useTodos} from '../../providers/TodoProvider'
+import { useState } from "react";
+import { useTodos } from "../../providers/TodoProvider";
 
 function BtnDelete({ handleClick }) {
   return (
@@ -8,15 +9,50 @@ function BtnDelete({ handleClick }) {
   );
 }
 
+function BtnEdit({ handleClick, label }) {
+  return (
+    <button data-testid="BtnEdit" type="button" onClick={handleClick}>
+      {label}
+    </button>
+  );
+}
+
 function Todo({ todo }) {
-  const {deleteTodo} = useTodos();
-  function handleDelete(){
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [task, setTask] = useState(todo?.task ?? "");
+
+  const { deleteTodo, editTodo } = useTodos();
+  function handleDelete() {
     deleteTodo(todo);
+  }
+  function handleEdit() {
+    setShowEditForm((prev) => !prev);
   }
   return (
     <div data-testid="Todo" className="Todo">
-      {todo?.task}
-      <BtnDelete handleClick={handleDelete} />
+      {showEditForm ? (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            editTodo({
+              ...todo,
+              task,
+            });
+            setTask("");
+            setShowEditForm(false);
+          }}
+        >
+          <input
+            type="textbox"
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+          />
+        </form>
+      ) : (
+        <div>{todo?.task}</div>
+      )}
+      <BtnEdit handleClick={handleEdit} label={showEditForm ? "Cancel" : "Edit"} />
+      {!showEditForm && <BtnDelete handleClick={handleDelete} />}
     </div>
   );
 }

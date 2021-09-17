@@ -44,7 +44,7 @@ describe("TodoProvider", () => {
     expect(addTodo).toHaveBeenCalledTimes(1);
     expect(addTodo).toHaveBeenCalledWith(newTask);
   });
-  it("provides an deleteTodo function", () =>{
+  it("provides a deleteTodo function", () =>{
     const task = { id: 1, task: "test task", done: false };
     const TestComponent = () => {
       const { deleteTodo } = useTodos();
@@ -55,5 +55,17 @@ describe("TodoProvider", () => {
     customRender(TestComponent, { deleteTodo });
     expect(deleteTodo).toHaveBeenCalledTimes(1);
     expect(deleteTodo).toHaveBeenCalledWith(task);
+  });
+  it("provides an editTodo function", () =>{
+    const task = { id: 1, task: "test task", done: false };
+    const TestComponent = () => {
+      const { editTodo } = useTodos();
+      editTodo(task);
+      return null;
+    };
+    const editTodo = jest.fn();
+    customRender(TestComponent, { editTodo });
+    expect(editTodo).toHaveBeenCalledTimes(1);
+    expect(editTodo).toHaveBeenCalledWith(task);
   });
 });
