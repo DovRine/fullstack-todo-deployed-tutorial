@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useTodos } from "../../providers/TodoProvider";
 
-function TodoForm({ handleSubmit }) {
+function TodoForm() {
+  const { addTodo } = useTodos();
+
   const [task, setTask] = useState("");
   function doSubmit(e) {
     e.preventDefault();
-    handleSubmit({ task });
+    addTodo({ task });
     setTask("");
   }
   return (

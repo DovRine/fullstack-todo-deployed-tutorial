@@ -1,3 +1,5 @@
+import {useTodos} from '../../providers/TodoProvider'
+
 function BtnDelete({ handleClick }) {
   return (
     <button data-testid="BtnDelete" type="button" onClick={handleClick}>
@@ -5,7 +7,9 @@ function BtnDelete({ handleClick }) {
     </button>
   );
 }
-function Todo({ todo, deleteTodo }) {
+
+function Todo({ todo }) {
+  const {deleteTodo} = useTodos();
   function handleDelete(){
     deleteTodo(todo);
   }
