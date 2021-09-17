@@ -33,4 +33,19 @@ describe("App", () => {
 
     expect(list).toHaveTextContent(task);
   });
+  it("deletes a todo from the list", () => {
+    const task = "test task";
+    render(<App />);
+    const input = screen.getByRole("textbox");
+    const btn = screen.getByRole("button");
+
+    userEvent.type(input, task);
+    btn.click();
+
+    const btnDelete = screen.getByTestId("BtnDelete");
+    btnDelete.click();
+
+    const list = screen.getByTestId("TodoList");
+    expect(list).not.toHaveTextContent(task);
+  });
 });

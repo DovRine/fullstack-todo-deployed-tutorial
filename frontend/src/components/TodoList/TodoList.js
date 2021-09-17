@@ -1,10 +1,12 @@
 import { EmptyList, Todo } from "..";
 
-function TodoList({ todos = [] }) {
+function TodoList({ todos = [], deleteTodo = { deleteTodo } }) {
   return (
     <div data-testid="TodoList" className="TodoList">
       {todos.length ? (
-        todos.map((todo) => <Todo key={todo.id} todo={todo} />)
+        todos.map((todo) => (
+          <Todo key={todo.id} todo={todo} deleteTodo={deleteTodo} />
+        ))
       ) : (
         <EmptyList />
       )}

@@ -9,10 +9,13 @@ function App() {
     todo.done = false;
     setTodos((prev) => [todo, ...prev]);
   }
+  function deleteTodo(todo) {
+    setTodos((prev) => prev.filter((t) => t.id !== todo.id));
+  }
   return (
     <div data-testid="App" className="App">
       <TodoForm handleSubmit={addTodo} />
-      <TodoList todos={todos} />
+      <TodoList todos={todos} deleteTodo={deleteTodo} />
     </div>
   );
 }
