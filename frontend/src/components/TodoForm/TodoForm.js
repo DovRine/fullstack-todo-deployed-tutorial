@@ -10,8 +10,10 @@ function TodoForm() {
 
   function doSubmit(e) {
     e.preventDefault();
-    addTodo({ task });
-    setTask("");
+    if(task){
+      addTodo({ task });
+      setTask("");
+    }
   }
   return (
     <form data-testid="TodoForm" className="TodoForm" onSubmit={doSubmit}>

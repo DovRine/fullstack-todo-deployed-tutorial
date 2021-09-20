@@ -29,6 +29,18 @@ describe("TodoForm", () => {
     customRender(TodoForm, {addTodo: jest.fn()})
     screen.getByRole("button");
   });
+  it('does not add a todo if task is empty', () => {
+    const addTodo = jest.fn();
+    customRender(TodoForm, {addTodo})
+    const task = "";
+    const input = screen.getByRole("textbox");
+    const btn = screen.getByRole("button");
+
+    userEvent.type(input, task);
+    btn.click();
+
+    expect(addTodo).toHaveBeenCalledTimes(0);
+  })
   it("adds a todo", () => {
     const addTodo = jest.fn();
     customRender(TodoForm, {addTodo})
