@@ -16,7 +16,7 @@ function BtnDelete({ handleClick }) {
       type="button"
       onClick={handleClick}
     >
-      <FontAwesomeIcon icon={faTrashAlt} />
+      <FontAwesomeIcon icon={faTrashAlt} aria-label={'delete'} />
     </button>
   );
 }
@@ -29,7 +29,7 @@ function BtnEdit({ handleClick, icon }) {
       type="button"
       onClick={handleClick}
     >
-      <FontAwesomeIcon icon={icon} />
+      <FontAwesomeIcon aria-label={'edit'} icon={icon} />
     </button>
   );
 }

@@ -50,7 +50,8 @@ describe("Todo", () => {
 
     customRender(Todo, { editTodo }, todo);
     const btn = screen.getByTestId("BtnEdit");
-    expect(btn).toHaveTextContent("Edit");
+    const ui = screen.getByLabelText('edit')
+    expect(ui).toHaveClass("fa-pencil-alt");
 
     // go into edit mode
     btn.click();
@@ -77,13 +78,14 @@ describe("Todo", () => {
     btn.click();
     expect(screen.queryByTestId("BtnDelete")).toBeNull();
   });
-  it('changes edit button label to "Cancel" in edit mode', () => {
+  it('changes edit button icon to indicate "Cancel" in edit mode', () => {
     const todo = { id: 1, task: "test task", done: false };
     const editTodo = jest.fn();
     customRender(Todo, { editTodo }, todo);
     const btn = screen.getByTestId("BtnEdit");
     btn.click();
-    expect(btn).toHaveTextContent("Cancel");
+    const ui = screen.getByLabelText('edit')
+    expect(ui).toHaveClass("fa-ban");
   });
   it('todo done status can be toggled via doubleclick', () => {
     const todo = { id: 1, task: "test task", done: false };
