@@ -6,10 +6,16 @@ import {
   faPencilAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { useTodos } from "../../providers/TodoProvider";
+import "./Todo.scss";
 
 function BtnDelete({ handleClick }) {
   return (
-    <button data-testid="BtnDelete" type="button" onClick={handleClick}>
+    <button
+      data-testid="BtnDelete"
+      className="BtnDelete"
+      type="button"
+      onClick={handleClick}
+    >
       <FontAwesomeIcon icon={faTrashAlt} />
     </button>
   );
@@ -17,7 +23,12 @@ function BtnDelete({ handleClick }) {
 
 function BtnEdit({ handleClick, icon }) {
   return (
-    <button data-testid="BtnEdit" type="button" onClick={handleClick}>
+    <button
+      data-testid="BtnEdit"
+      className="BtnEdit"
+      type="button"
+      onClick={handleClick}
+    >
       <FontAwesomeIcon icon={icon} />
     </button>
   );
@@ -57,17 +68,19 @@ function Todo({ todo }) {
       ) : (
         <div
           data-testid="TodoLabel"
-          className={`${todo?.done ? "done" : ""}`}
+          className={`TodoLabel ${todo?.done ? "done" : ""}`}
           onDoubleClick={() => toggleTodo(todo)}
         >
           {todo?.task}
         </div>
       )}
-      <BtnEdit
-        handleClick={handleEdit}
-        icon={showEditForm ? faBan : faPencilAlt}
-      />
-      {!showEditForm && <BtnDelete handleClick={handleDelete} />}
+      <div>
+        <BtnEdit
+          handleClick={handleEdit}
+          icon={showEditForm ? faBan : faPencilAlt}
+        />
+        {!showEditForm && <BtnDelete handleClick={handleDelete} />}
+      </div>
     </div>
   );
 }

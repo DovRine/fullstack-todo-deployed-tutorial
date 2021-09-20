@@ -5,7 +5,6 @@ $borderRadius: 0.25em;
     border-radius: $borderRadius;
     display: flex;
     justify-content: space-between;
-    width: 90%;
 
     button {
         background-color: green;
@@ -23,5 +22,6 @@ $borderRadius: 0.25em;
         text-align: center;
         color: blue;
         padding: 0.15em 0;
+        width: 75%;
     }
 }
