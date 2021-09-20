@@ -55,7 +55,6 @@ function Todo({ todo }) {
               ...todo,
               task,
             });
-            setTask("");
             setShowEditForm(false);
           }}
         >
