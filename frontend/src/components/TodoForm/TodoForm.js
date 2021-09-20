@@ -12,7 +12,7 @@ function TodoForm() {
   }
   return (
     <form data-testid="TodoForm" className="TodoForm" onSubmit={doSubmit}>
-      <input type="text" onChange={(e) => setTask(e.target.value)} />
+      <input value={task} type="text" onChange={(e) => setTask(e.target.value)} />
       <input type="submit" value="Add Todo" />
     </form>
   );
