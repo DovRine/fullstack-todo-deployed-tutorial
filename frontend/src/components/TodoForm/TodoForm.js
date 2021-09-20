@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useTodos } from "../../providers/TodoProvider";
+import "./TodoForm.scss";
 
 function TodoForm() {
   const { addTodo } = useTodos();
