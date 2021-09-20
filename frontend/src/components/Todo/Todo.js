@@ -1,18 +1,24 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTrashAlt,
+  faBan,
+  faPencilAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { useTodos } from "../../providers/TodoProvider";
 
 function BtnDelete({ handleClick }) {
   return (
     <button data-testid="BtnDelete" type="button" onClick={handleClick}>
-      Delete
+      <FontAwesomeIcon icon={faTrashAlt} />
     </button>
   );
 }
 
-function BtnEdit({ handleClick, label }) {
+function BtnEdit({ handleClick, icon }) {
   return (
     <button data-testid="BtnEdit" type="button" onClick={handleClick}>
-      {label}
+      <FontAwesomeIcon icon={icon} />
     </button>
   );
 }
@@ -49,13 +55,17 @@ function Todo({ todo }) {
           />
         </form>
       ) : (
-        <div data-testid="TodoLabel" className={`${todo?.done ? 'done' : ''}`} onDoubleClick={() => toggleTodo(todo)}>
+        <div
+          data-testid="TodoLabel"
+          className={`${todo?.done ? "done" : ""}`}
+          onDoubleClick={() => toggleTodo(todo)}
+        >
           {todo?.task}
         </div>
       )}
       <BtnEdit
         handleClick={handleEdit}
-        label={showEditForm ? "Cancel" : "Edit"}
+        icon={showEditForm ? faBan : faPencilAlt}
       />
       {!showEditForm && <BtnDelete handleClick={handleDelete} />}
     </div>

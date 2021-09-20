@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useTodos } from "../../providers/TodoProvider";
 
 function TodoForm() {
@@ -12,8 +14,14 @@ function TodoForm() {
   }
   return (
     <form data-testid="TodoForm" className="TodoForm" onSubmit={doSubmit}>
-      <input value={task} type="text" onChange={(e) => setTask(e.target.value)} />
-      <input type="submit" value="Add Todo" />
+      <input
+        value={task}
+        type="text"
+        onChange={(e) => setTask(e.target.value)}
+      />
+      <button type="submit">
+        <FontAwesomeIcon icon={faPlus} />
+      </button>
     </form>
   );
 }
