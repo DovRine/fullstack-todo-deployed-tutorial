@@ -68,4 +68,16 @@ describe("TodoProvider", () => {
     expect(editTodo).toHaveBeenCalledTimes(1);
     expect(editTodo).toHaveBeenCalledWith(task);
   });
+  it("provides a toggleTodo function", () =>{
+    const task = { id: 1, task: "test task", done: false };
+    const TestComponent = () => {
+      const { toggleTodo } = useTodos();
+      toggleTodo(task);
+      return null;
+    };
+    const toggleTodo = jest.fn();
+    customRender(TestComponent, { toggleTodo });
+    expect(toggleTodo).toHaveBeenCalledTimes(1);
+    expect(toggleTodo).toHaveBeenCalledWith(task);
+  });
 });

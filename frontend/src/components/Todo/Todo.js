@@ -21,7 +21,7 @@ function Todo({ todo }) {
   const [showEditForm, setShowEditForm] = useState(false);
   const [task, setTask] = useState(todo?.task ?? "");
 
-  const { deleteTodo, editTodo } = useTodos();
+  const { deleteTodo, editTodo, toggleTodo } = useTodos();
   function handleDelete() {
     deleteTodo(todo);
   }
@@ -49,9 +49,14 @@ function Todo({ todo }) {
           />
         </form>
       ) : (
-        <div>{todo?.task}</div>
+        <div data-testid="TodoLabel" className={`${todo?.done ? 'done' : ''}`} onDoubleClick={() => toggleTodo(todo)}>
+          {todo?.task}
+        </div>
       )}
-      <BtnEdit handleClick={handleEdit} label={showEditForm ? "Cancel" : "Edit"} />
+      <BtnEdit
+        handleClick={handleEdit}
+        label={showEditForm ? "Cancel" : "Edit"}
+      />
       {!showEditForm && <BtnDelete handleClick={handleDelete} />}
     </div>
   );

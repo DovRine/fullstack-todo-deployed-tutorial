@@ -21,6 +21,10 @@ function TodoProvider({ children, values }) {
   function editTodo(todo) {
     setTodos((prev) => prev.map((t) => (t.id === todo.id ? todo : t)));
   }
+  function toggleTodo(todo) {
+    todo.done = !todo.done;
+    editTodo(todo);
+  }
   return (
     <TodoContext.Provider
       value={{
@@ -28,6 +32,7 @@ function TodoProvider({ children, values }) {
         deleteTodo: values?.deleteTodo ? values?.deleteTodo : deleteTodo,
         editTodo: values?.editTodo ? values?.editTodo : editTodo,
         todos: values?.todos ? values?.todos : todos,
+        toggleTodo: values?.toggleTodo ? values?.toggleTodo : toggleTodo,
       }}
     >
       {children}

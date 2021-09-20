@@ -85,4 +85,13 @@ describe("Todo", () => {
     btn.click();
     expect(btn).toHaveTextContent("Cancel");
   });
+  it('todo done status can be toggled via doubleclick', () => {
+    const todo = { id: 1, task: "test task", done: false };
+    const toggleTodo = jest.fn();
+    customRender(Todo, { toggleTodo }, todo);
+    const ui = screen.getByTestId("TodoLabel");
+    userEvent.dblClick(ui);
+    expect(toggleTodo).toHaveBeenCalledTimes(1);
+    expect(toggleTodo).toHaveBeenCalledWith(todo);
+  })
 });
