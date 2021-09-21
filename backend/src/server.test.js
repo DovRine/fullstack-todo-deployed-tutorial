@@ -1,7 +1,10 @@
-import app from './index.js';
+import makeApp from "./server.js";
 
-describe('server', () => {
-    it('exists', () => {
-        expect(typeof app).toBe('function')
-    })
-})
+const app = makeApp();
+
+describe("server", () => {
+  it("exists", () => {
+    expect(typeof makeApp).toBe("function");
+    expect(typeof app).toBe("function");
+  });
+});
