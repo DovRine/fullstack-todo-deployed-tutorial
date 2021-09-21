@@ -21,4 +21,20 @@ describe("server", () => {
         done();
       });
   });
+  it("POST /todos - creates a new todo", (done) => {
+    const todo = { task: "test task" };
+    supertest(app)
+      .post("/todos")
+      .send(todo)
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(201)
+      .end((err, res) => {
+        if (err) throw err;
+        expect(res.body.task).toBe(todo.task);
+        expect(res.body.id).toBeDefined();
+        expect(res.body.done).toBe(false);
+        done();
+      });
+  });
 });
