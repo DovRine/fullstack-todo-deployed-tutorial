@@ -55,7 +55,7 @@ describe("db", () => {
     });
     it("adds a todo", async () => {
       const newTodo = { task: "buy milk" };
-      const randomId = Math.floor(Math.random() * 100) + 1
+      const randomId = Math.floor(Math.random() * 100) + 1;
       mockQuery.mockResolvedValue({
         rowCount: 1,
         rows: [{ id: randomId }],
@@ -64,6 +64,19 @@ describe("db", () => {
       expect(mockQuery).toHaveBeenCalledTimes(1);
       expect(mockQuery.mock.calls[0][1]).toEqual([newTodo.task]);
       expect(result).toEqual({ id: randomId });
+    });
+  });
+
+  describe("deleteTodo", () => {
+    it("exists", () => {
+      expect(typeof db.deleteTodo).toBe("function");
+    });
+    it("deletes a todo", async () => {
+      const todo = { id: 1, task: "buy milk", done: true };
+      const result = await db.deleteTodo(todo);
+      expect(mockQuery).toHaveBeenCalledTimes(1);
+      expect(mockQuery.mock.calls[0][1]).toEqual([todo.id]);
+      expect(result).toEqual({ status: "ok" });
     });
   });
 });

@@ -23,24 +23,35 @@ export async function listTodos() {
   }
 }
 
-export async function editTodo(todo){
-  const sql = "update table todos set task='$1', done=$2 where id=$3"
-  const params = [todo.task, todo.done, todo.id]
-  try{
-    await pool.query(sql, params)
-    return {status: 'ok'}
-  }catch(err){
+export async function editTodo(todo) {
+  const sql = "update table todos set task='$1', done=$2 where id=$3";
+  const params = [todo.task, todo.done, todo.id];
+  try {
+    await pool.query(sql, params);
+    return { status: "ok" };
+  } catch (err) {
     throw err;
   }
 }
 
-export async function addTodo(todo){
-  const sql = "insert into todos (task) values('$1') returning id;"
-  const params = [todo.task]
-  try{
-    const {rows} = await pool.query(sql, params)
-    return {id: rows[0].id}
-  }catch(err){
-    throw err
+export async function addTodo(todo) {
+  const sql = "insert into todos (task) values('$1') returning id;";
+  const params = [todo.task];
+  try {
+    const { rows } = await pool.query(sql, params);
+    return { id: rows[0].id };
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function deleteTodo(todo) {
+  const sql = "delete from todos where id=$1";
+  const params = [todo.id];
+  try {
+    await pool.query(sql, params);
+    return { status: "ok" };
+  } catch (err) {
+    throw err;
   }
 }
