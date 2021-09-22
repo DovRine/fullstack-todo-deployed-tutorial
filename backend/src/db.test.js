@@ -31,4 +31,21 @@ describe("db", () => {
       expect(mockQuery).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe("editTodo", () => {
+    it("exists", () => {
+      expect(typeof db.editTodo).toBe("function");
+    });
+    it("edits a todo", async () => {
+      const updatedTodo = { id: 1, task: "buy milk", done: true };
+      const result = await db.editTodo(updatedTodo);
+      expect(mockQuery).toHaveBeenCalledTimes(1);
+      expect(mockQuery.mock.calls[0][1]).toEqual([
+        updatedTodo.task,
+        updatedTodo.done,
+        updatedTodo.id,
+      ]);
+      expect(result).toEqual({ status: "ok" });
+    });
+  });
 });
