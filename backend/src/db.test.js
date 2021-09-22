@@ -48,4 +48,22 @@ describe("db", () => {
       expect(result).toEqual({ status: "ok" });
     });
   });
+
+  describe("addTodo", () => {
+    it("exists", () => {
+      expect(typeof db.addTodo).toBe("function");
+    });
+    it("adds a todo", async () => {
+      const newTodo = { task: "buy milk" };
+      const randomId = Math.floor(Math.random() * 100) + 1
+      mockQuery.mockResolvedValue({
+        rowCount: 1,
+        rows: [{ id: randomId }],
+      });
+      const result = await db.addTodo(newTodo);
+      expect(mockQuery).toHaveBeenCalledTimes(1);
+      expect(mockQuery.mock.calls[0][1]).toEqual([newTodo.task]);
+      expect(result).toEqual({ id: randomId });
+    });
+  });
 });

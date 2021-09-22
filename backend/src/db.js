@@ -33,3 +33,14 @@ export async function editTodo(todo){
     throw err;
   }
 }
+
+export async function addTodo(todo){
+  const sql = "insert into todos (task) values('$1') returning id;"
+  const params = [todo.task]
+  try{
+    const {rows} = await pool.query(sql, params)
+    return {id: rows[0].id}
+  }catch(err){
+    throw err
+  }
+}
