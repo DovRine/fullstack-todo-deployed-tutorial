@@ -1,10 +1,10 @@
 import express from "express";
 
-export default function makeApp() {
+export default function makeApp(db) {
   const app = express();
 
-  app.get("/todos", (req, res) => {
-    res.send([]);
+  app.get("/todos", async (req, res) => {
+    res.send(await db.listTodos());
   });
 
   return app;
