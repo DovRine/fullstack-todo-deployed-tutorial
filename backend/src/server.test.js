@@ -3,10 +3,12 @@ import supertest from "supertest";
 import makeApp from "./server.js";
 
 const addTodo = jest.fn();
+const editTodo = jest.fn();
 const listTodos = jest.fn();
 
 const db = {
   addTodo,
+  editTodo,
   listTodos,
 };
 
@@ -81,6 +83,52 @@ describe("server", () => {
       let todoWithNonStringTask = { task: {} };
       res = await doAddTodo(1, todoWithNonStringTask);
       expect(res.statusCode).toBe(400);
+    });
+  });
+
+  describe("PUT /todos - edit todo", () => {
+    let todo = { id: 1, task: "buy milk", done: false };
+    async function doEditTodo(updatedTodo) {
+      editTodo.mockResolvedValue({ status: "ok" });
+      return await supertest(app)
+        .put("/todos")
+        .set("Accept", "application/json")
+        .send(updatedTodo);
+    }
+    it("returns content-type json", async () => {
+      const res = await doEditTodo();
+      expect(res.headers["content-type"]).toEqual(
+        expect.stringContaining("json")
+      );
+    });
+    it("returns status 200", async () => {
+      const res = await doEditTodo(todo);
+      expect(res.statusCode).toBe(200);
+    });
+    it('returns {status: "ok"} on success', async () => {
+      const updatedTodo = { ...todo, done: true };
+      const res = await doEditTodo(updatedTodo);
+      expect(res.body).toEqual({ status: "ok" });
+      expect(editTodo).toHaveBeenCalledTimes(1);
+      expect(editTodo.mock.calls[0][0]).toEqual(updatedTodo);
+    });
+    it("returns status 400 if object shape is not: {id: int, task: str, done: bool}", async () => {
+      const brokenTodos = [
+        {},
+        { id: 1 },
+        { task: "test" },
+        { done: false },
+        { id: 1, task: "test" },
+        { id: 1, done: false },
+        { task: "test", done: false },
+        { id: 0, task: "test", done: false },
+        { id: NaN, task: "test", done: true },
+        { id: 1, task: "test", done: undefined },
+      ];
+      for (let brokenTodo of brokenTodos) {
+        const res = await doEditTodo(brokenTodo);
+        expect(res.statusCode).toBe(400);
+      }
     });
   });
 });
