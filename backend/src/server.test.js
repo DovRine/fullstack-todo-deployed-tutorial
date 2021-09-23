@@ -3,11 +3,13 @@ import supertest from "supertest";
 import makeApp from "./server.js";
 
 const addTodo = jest.fn();
+const deleteTodo = jest.fn();
 const editTodo = jest.fn();
 const listTodos = jest.fn();
 
 const db = {
   addTodo,
+  deleteTodo,
   editTodo,
   listTodos,
 };
@@ -127,6 +129,52 @@ describe("server", () => {
       ];
       for (let brokenTodo of brokenTodos) {
         const res = await doEditTodo(brokenTodo);
+        expect(res.statusCode).toBe(400);
+      }
+    });
+  });
+
+  describe("DELETE /todos - delete todo", () => {
+    let todo = { id: 1, task: "buy milk", done: true };
+    async function doDeleteTodo(todoToDelete) {
+      deleteTodo.mockResolvedValue({ status: "ok" });
+      return await supertest(app)
+        .delete("/todos")
+        .set("Accept", "application/json")
+        .send(todoToDelete);
+    }
+    it("returns content-type json", async () => {
+      const res = await doDeleteTodo(todo);
+      expect(res.headers["content-type"]).toEqual(
+        expect.stringContaining("json")
+      );
+    });
+    it("returns status 200", async () => {
+      const res = await doDeleteTodo(todo);
+      expect(res.statusCode).toBe(200);
+    });
+    it('returns {status: "ok"} on success', async () => {
+      const todoToDelete = { ...todo, done: true };
+      const res = await doDeleteTodo(todoToDelete);
+      expect(res.body).toEqual({ status: "ok" });
+      expect(deleteTodo).toHaveBeenCalledTimes(1);
+      expect(deleteTodo.mock.calls[0][0]).toEqual(todoToDelete);
+    });
+    it("returns status 400 if object shape is not: {id: int, task: str, done: bool}", async () => {
+      const brokenTodos = [
+        {},
+        { id: 1 },
+        { task: "test" },
+        { done: false },
+        { id: 1, task: "test" },
+        { id: 1, done: false },
+        { task: "test", done: false },
+        { id: 0, task: "test", done: false },
+        { id: NaN, task: "test", done: true },
+        { id: 1, task: "test", done: undefined },
+      ];
+      for (let brokenTodo of brokenTodos) {
+        const res = await doDeleteTodo(brokenTodo);
         expect(res.statusCode).toBe(400);
       }
     });

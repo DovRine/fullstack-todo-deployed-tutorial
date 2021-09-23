@@ -15,7 +15,7 @@ function validateTodo(todo, mode = "add") {
   if (typeof todo.task !== "string") {
     throw new Error("only strings are allowed as tasks");
   }
-  if (mode === "edit") {
+  if (mode === "edit" || mode === "delete") {
     // require {id: int, task: string, done: bool
     const requiredFields = ["id", "task", "done"];
     requiredFields.forEach((fld) => {
@@ -26,7 +26,11 @@ function validateTodo(todo, mode = "add") {
     if (Object.keys(todo).length > 3) {
       throw new Error("only fields: [id, task, done] are allowed");
     }
-    if (typeof todo.id !== "number" || Math.floor(todo.id) !== todo.id || todo.id < 1) {
+    if (
+      typeof todo.id !== "number" ||
+      Math.floor(todo.id) !== todo.id ||
+      todo.id < 1
+    ) {
       throw new Error("id can only be an integer > 0");
     }
     if (typeof todo.done !== "boolean") {
@@ -61,6 +65,16 @@ export default function makeApp(db) {
     try {
       validateTodo(todo, "edit");
       res.send(await db.editTodo(todo));
+    } catch (err) {
+      res.status(400).send({ err });
+    }
+  });
+
+  app.delete("/todos", async (req, res) => {
+    const todo = { ...req.body };
+    try {
+      validateTodo(todo, "delete");
+      res.send(await db.deleteTodo(todo));
     } catch (err) {
       res.status(400).send({ err });
     }
