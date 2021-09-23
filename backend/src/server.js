@@ -1,5 +1,5 @@
 import express from "express";
-import validateTodo from "./validateTodo";
+import sendResponse from "./helpers.js";
 
 export default function makeApp(db) {
   const app = express();
@@ -10,36 +10,31 @@ export default function makeApp(db) {
   });
 
   app.post("/todos", async (req, res) => {
-    let todo;
-    let retval;
-    try {
-      todo = { ...req.body };
-      validateTodo(todo);
-      retval = await db.addTodo(todo);
-    } catch (err) {
-      res.status(400).send({ err });
-    }
-    res.status(201).send(retval);
+    await sendResponse({
+      todo: { ...req.body },
+      mode: "add",
+      dbMethod: db.addTodo,
+      response: res,
+      status: 201,
+    });
   });
 
   app.put("/todos", async (req, res) => {
-    const todo = { ...req.body };
-    try {
-      validateTodo(todo, "edit");
-      res.send(await db.editTodo(todo));
-    } catch (err) {
-      res.status(400).send({ err });
-    }
+    await sendResponse({
+      todo: { ...req.body },
+      mode: "edit",
+      dbMethod: db.editTodo,
+      response: res,
+    });
   });
 
   app.delete("/todos", async (req, res) => {
-    const todo = { ...req.body };
-    try {
-      validateTodo(todo, "delete");
-      res.send(await db.deleteTodo(todo));
-    } catch (err) {
-      res.status(400).send({ err });
-    }
+    await sendResponse({
+      todo: { ...req.body },
+      mode: "delete",
+      dbMethod: db.deleteTodo,
+      response: res,
+    });
   });
 
   return app;
