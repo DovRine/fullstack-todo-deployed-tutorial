@@ -16,6 +16,31 @@ const db = {
 
 const app = makeApp(db);
 
+async function testBrokenTodos(mockDbMethod) {
+  const brokenTodos = [
+    {},
+    { id: 1 },
+    { task: "test" },
+    { done: false },
+    { id: 1, task: "test" },
+    { id: 1, done: false },
+    { task: "test", done: false },
+    { id: 0, task: "test", done: false },
+    { id: NaN, task: "test", done: true },
+    { id: 1, task: "test", done: undefined },
+  ];
+  for (let brokenTodo of brokenTodos) {
+    const res = await mockDbMethod(brokenTodo);
+    expect(res.statusCode).toBe(400);
+  }
+}
+
+function hasJsonContentType(response) {
+  expect(response.headers["content-type"]).toEqual(
+    expect.stringContaining("json")
+  );
+}
+
 describe("server", () => {
   beforeEach(() => jest.clearAllMocks());
   it("exists", () => {
@@ -30,9 +55,7 @@ describe("server", () => {
     it("returns content-type json", async () => {
       listTodos.mockResolvedValue([]);
       const res = await supertest(app).get("/todos");
-      expect(res.headers["content-type"]).toEqual(
-        expect.stringContaining("json")
-      );
+      hasJsonContentType(res);
     });
     it("returns an array of todos", async () => {
       listTodos.mockResolvedValue([]);
@@ -51,16 +74,15 @@ describe("server", () => {
         .set("Accept", "application/json")
         .send(newTodo);
     }
-    it("return content-type json", async () => {
-      const res = await doAddTodo();
-      expect(res.headers["content-type"]).toEqual(
-        expect.stringContaining("json")
-      );
-    });
+
+    it("returns content-type json", async () =>
+      hasJsonContentType(await doAddTodo()));
+
     it("return 201 status code", async () => {
       const res = await doAddTodo();
       expect(res.statusCode).toBe(201);
     });
+    
     it("return the id of the newly added todo", async () => {
       const randomId = Math.floor(Math.random() * 100) + 1;
       const res = await doAddTodo(randomId);
@@ -97,12 +119,9 @@ describe("server", () => {
         .set("Accept", "application/json")
         .send(updatedTodo);
     }
-    it("returns content-type json", async () => {
-      const res = await doEditTodo();
-      expect(res.headers["content-type"]).toEqual(
-        expect.stringContaining("json")
-      );
-    });
+    it("returns content-type json", async () =>
+      hasJsonContentType(await doEditTodo()));
+
     it("returns status 200", async () => {
       const res = await doEditTodo(todo);
       expect(res.statusCode).toBe(200);
@@ -115,22 +134,7 @@ describe("server", () => {
       expect(editTodo.mock.calls[0][0]).toEqual(updatedTodo);
     });
     it("returns status 400 if object shape is not: {id: int, task: str, done: bool}", async () => {
-      const brokenTodos = [
-        {},
-        { id: 1 },
-        { task: "test" },
-        { done: false },
-        { id: 1, task: "test" },
-        { id: 1, done: false },
-        { task: "test", done: false },
-        { id: 0, task: "test", done: false },
-        { id: NaN, task: "test", done: true },
-        { id: 1, task: "test", done: undefined },
-      ];
-      for (let brokenTodo of brokenTodos) {
-        const res = await doEditTodo(brokenTodo);
-        expect(res.statusCode).toBe(400);
-      }
+      await testBrokenTodos(doEditTodo);
     });
   });
 
@@ -143,12 +147,9 @@ describe("server", () => {
         .set("Accept", "application/json")
         .send(todoToDelete);
     }
-    it("returns content-type json", async () => {
-      const res = await doDeleteTodo(todo);
-      expect(res.headers["content-type"]).toEqual(
-        expect.stringContaining("json")
-      );
-    });
+    it("returns content-type json", async () =>
+      hasJsonContentType(await doDeleteTodo(todo)));
+
     it("returns status 200", async () => {
       const res = await doDeleteTodo(todo);
       expect(res.statusCode).toBe(200);
@@ -161,22 +162,7 @@ describe("server", () => {
       expect(deleteTodo.mock.calls[0][0]).toEqual(todoToDelete);
     });
     it("returns status 400 if object shape is not: {id: int, task: str, done: bool}", async () => {
-      const brokenTodos = [
-        {},
-        { id: 1 },
-        { task: "test" },
-        { done: false },
-        { id: 1, task: "test" },
-        { id: 1, done: false },
-        { task: "test", done: false },
-        { id: 0, task: "test", done: false },
-        { id: NaN, task: "test", done: true },
-        { id: 1, task: "test", done: undefined },
-      ];
-      for (let brokenTodo of brokenTodos) {
-        const res = await doDeleteTodo(brokenTodo);
-        expect(res.statusCode).toBe(400);
-      }
+      await testBrokenTodos(doDeleteTodo);
     });
   });
 });
