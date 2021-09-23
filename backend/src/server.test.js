@@ -40,12 +40,12 @@ describe("server", () => {
 
   describe("POST /todos - add todo", () => {
     let todo = { task: "buy milk" };
-    async function doAddTodo(returnId=1) {
-      addTodo.mockResolvedValue({ id:  returnId});
+    async function doAddTodo(returnId = 1, newTodo = todo) {
+      addTodo.mockResolvedValue({ id: returnId });
       return await supertest(app)
         .post("/todos")
         .set("Accept", "application/json")
-        .send(todo);
+        .send(newTodo);
     }
     it("return content-type json", async () => {
       const res = await doAddTodo();
@@ -64,6 +64,23 @@ describe("server", () => {
       expect(addTodo).toHaveBeenCalledTimes(1);
       expect(addTodo.mock.calls[0][0]).toEqual(todo);
     });
-    // TODO: returns status 400 on invalid input
+    it('returns 400 if todo is not an object with a single key "task" or has a task with an empty string', async () => {
+      let todoMissingKey = {};
+      let res;
+      res = await doAddTodo(1, todoMissingKey);
+      expect(res.statusCode).toBe(400);
+
+      let todoWithExtraKeys = { task: "buy milk", done: false };
+      res = await doAddTodo(1, todoWithExtraKeys);
+      expect(res.statusCode).toBe(400);
+
+      let todoWithEmptyTask = { task: "" };
+      res = await doAddTodo(1, todoWithEmptyTask);
+      expect(res.statusCode).toBe(400);
+
+      let todoWithNonStringTask = { task: {} };
+      res = await doAddTodo(1, todoWithNonStringTask);
+      expect(res.statusCode).toBe(400);
+    });
   });
 });
