@@ -24,7 +24,7 @@ export async function listTodos() {
 }
 
 export async function editTodo(todo) {
-  const sql = "update table todos set task=$1, done=$2 where id=$3";
+  const sql = "update todos set task=$1, done=$2 where id=$3";
   const params = [todo.task, todo.done, todo.id];
   try {
     await pool.query(sql, params);
