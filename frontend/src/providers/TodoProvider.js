@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 const TodoContext = React.createContext();
 
@@ -8,18 +8,42 @@ function useTodos() {
 
 function TodoProvider({ children, values }) {
   const [todos, setTodos] = useState([]);
+  function listTodos() {
+    fetch("http://localhost:8000/todos")
+      .then((res) => res.json())
+      .then((todos) => setTodos(todos));
+  }
+  useEffect(() => {
+    listTodos();
+  }, []);
   function addTodo(todo) {
-    todo.id = String(Math.random());
-    todo.done = false;
-    setTodos((prev) => [todo, ...prev]);
+    fetch("http://localhost:8000/todos", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    })
+      .then((res) => res.json())
+      .then(() => listTodos());
   }
 
   function deleteTodo(todo) {
-    setTodos((prev) => prev.filter((t) => t.id !== todo.id));
+    fetch("http://localhost:8000/todos", {
+      method: "delete",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    })
+      .then((res) => res.json())
+      .then(() => listTodos());
   }
 
   function editTodo(todo) {
-    setTodos((prev) => prev.map((t) => (t.id === todo.id ? todo : t)));
+    fetch("http://localhost:8000/todos", {
+      method: "put",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    })
+      .then((res) => res.json())
+      .then(() => listTodos());
   }
   function toggleTodo(todo) {
     todo.done = !todo.done;
