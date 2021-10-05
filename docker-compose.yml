@@ -9,6 +9,16 @@ services:
       - ./frontend/public:/app/public
       - ./frontend/src:/app/src
 
+  backend:
+    container_name: todo-backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend/src/:/app/src
+
   db:
     container_name: todo-db
     image: postgres:latest
