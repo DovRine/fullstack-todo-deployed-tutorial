@@ -4,7 +4,7 @@ FROM node:16
 RUN mkdir /app
 WORKDIR /app
 
-COPY ./.env.production ./.env.production
+COPY ./src/.env.production ./.env.production
 COPY ./package.prod.json ./package.json
 COPY ./yarn.lock .
 COPY ./public /app/public
