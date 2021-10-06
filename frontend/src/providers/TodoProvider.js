@@ -6,6 +6,23 @@ function useTodos() {
   return useContext(TodoContext);
 }
 
+async function doFetch(method = "get", requestData, callback) {
+  let options = {
+    method,
+  };
+  if (method.toLowerCase() !== "get") {
+    options = {
+      ...options,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestData),
+    };
+  }
+  const url = `${process.env.REACT_APP_API_URL}/todos`;
+  const response = await fetch(url, options);
+  const responseData = await response.json();
+  callback(responseData);
+}
+
 function TodoProvider({ children, values }) {
   const [todos, setTodos] = useState([]);
   function listTodos() {
@@ -17,33 +34,13 @@ function TodoProvider({ children, values }) {
     listTodos();
   }, []);
   function addTodo(todo) {
-    fetch("http://localhost/api/todos", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(todo),
-    })
-      .then((res) => res.json())
-      .then(() => listTodos());
+    doFetch("post", todo, () => listTodos());
   }
-
   function deleteTodo(todo) {
-    fetch("http://localhost/api/todos", {
-      method: "delete",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(todo),
-    })
-      .then((res) => res.json())
-      .then(() => listTodos());
+    doFetch("delete", todo, () => listTodos());
   }
-
   function editTodo(todo) {
-    fetch("http://localhost/api/todos", {
-      method: "put",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(todo),
-    })
-      .then((res) => res.json())
-      .then(() => listTodos());
+    doFetch("put", todo, () => listTodos());
   }
   function toggleTodo(todo) {
     todo.done = !todo.done;
