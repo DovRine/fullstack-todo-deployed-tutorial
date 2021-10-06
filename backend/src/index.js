@@ -1,6 +1,7 @@
 import makeApp from "./server.js";
+import * as db from './db.js';
 
-const app = makeApp();
+const app = makeApp(db);
 const port = 8000
 
 app.listen(port, () => {

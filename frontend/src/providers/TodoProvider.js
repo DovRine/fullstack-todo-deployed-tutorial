@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 const TodoContext = React.createContext();
 
@@ -6,20 +6,41 @@ function useTodos() {
   return useContext(TodoContext);
 }
 
+async function doFetch(method = "get", requestData, callback) {
+  let options = {
+    method,
+  };
+  if (method.toLowerCase() !== "get") {
+    options = {
+      ...options,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestData),
+    };
+  }
+  const url = `${process.env.REACT_APP_API_URL}/todos`;
+  const response = await fetch(url, options);
+  const responseData = await response.json();
+  callback(responseData);
+}
+
 function TodoProvider({ children, values }) {
   const [todos, setTodos] = useState([]);
+  function listTodos() {
+    fetch("http://localhost/api/todos")
+      .then((res) => res.json())
+      .then((todos) => setTodos(todos));
+  }
+  useEffect(() => {
+    listTodos();
+  }, []);
   function addTodo(todo) {
-    todo.id = String(Math.random());
-    todo.done = false;
-    setTodos((prev) => [todo, ...prev]);
+    doFetch("post", todo, () => listTodos());
   }
-
   function deleteTodo(todo) {
-    setTodos((prev) => prev.filter((t) => t.id !== todo.id));
+    doFetch("delete", todo, () => listTodos());
   }
-
   function editTodo(todo) {
-    setTodos((prev) => prev.map((t) => (t.id === todo.id ? todo : t)));
+    doFetch("put", todo, () => listTodos());
   }
   function toggleTodo(todo) {
     todo.done = !todo.done;

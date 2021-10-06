@@ -8,3 +8,30 @@ services:
     volumes:
       - ./frontend/public:/app/public
       - ./frontend/src:/app/src
+
+  backend:
+    container_name: todo-backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend/src/:/app/src
+
+  db:
+    container_name: todo-db
+    image: postgres:latest
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_DB}
+      DB_PORT: ${DB_PORT}
+
+volumes:
+  db_data:

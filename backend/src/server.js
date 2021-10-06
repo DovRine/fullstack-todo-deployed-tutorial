@@ -1,21 +1,42 @@
 import express from "express";
+import cors from "cors";
+import sendResponse from "./helpers.js";
 
-let todos = [];
-
-export default function makeApp() {
+export default function makeApp(db) {
   const app = express();
+  app.use(cors());
   app.use(express.json());
-  app.get("/todos", (req, res) => {
-    return res.json(todos);
+
+  app.get("/todos", async (req, res) => {
+    res.send(await db.listTodos());
   });
-  app.post("/todos", (req, res) => {
-    const todo = {
-      id: Math.random(),
-      task: req.body.task,
-      done: false,
-    };
-    todos = [todo, ...todos];
-    return res.status(201).json(todo);
+
+  app.post("/todos", async (req, res) => {
+    await sendResponse({
+      todo: { ...req.body },
+      mode: "add",
+      dbMethod: db.addTodo,
+      response: res,
+      status: 201,
+    });
+  });
+
+  app.put("/todos", async (req, res) => {
+    await sendResponse({
+      todo: { ...req.body },
+      mode: "edit",
+      dbMethod: db.editTodo,
+      response: res,
+    });
+  });
+
+  app.delete("/todos", async (req, res) => {
+    await sendResponse({
+      todo: { ...req.body },
+      mode: "delete",
+      dbMethod: db.deleteTodo,
+      response: res,
+    });
   });
 
   return app;
