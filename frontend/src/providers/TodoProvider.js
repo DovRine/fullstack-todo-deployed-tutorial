@@ -9,7 +9,7 @@ function useTodos() {
 function TodoProvider({ children, values }) {
   const [todos, setTodos] = useState([]);
   function listTodos() {
-    fetch("http://localhost:8000/todos")
+    fetch("http://localhost/api/todos")
       .then((res) => res.json())
       .then((todos) => setTodos(todos));
   }
@@ -17,7 +17,7 @@ function TodoProvider({ children, values }) {
     listTodos();
   }, []);
   function addTodo(todo) {
-    fetch("http://localhost:8000/todos", {
+    fetch("http://localhost/api/todos", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(todo),
@@ -27,7 +27,7 @@ function TodoProvider({ children, values }) {
   }
 
   function deleteTodo(todo) {
-    fetch("http://localhost:8000/todos", {
+    fetch("http://localhost/api/todos", {
       method: "delete",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(todo),
@@ -37,7 +37,7 @@ function TodoProvider({ children, values }) {
   }
 
   function editTodo(todo) {
-    fetch("http://localhost:8000/todos", {
+    fetch("http://localhost/api/todos", {
       method: "put",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(todo),

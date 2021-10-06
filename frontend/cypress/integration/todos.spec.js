@@ -1,16 +1,16 @@
-const url = "http://localhost:3000/";
+const url = "http://localhost";
 
 function mockListTodos(cy, retval, alias) {
-  cy.intercept("GET", "/todos", retval).as(alias);
+  cy.intercept("GET", "/api/todos", retval).as(alias);
 }
 function mockAddTodo(cy, retval, alias) {
-  cy.intercept("POST", "/todos", retval).as(alias);
+  cy.intercept("POST", "/api/todos", retval).as(alias);
 }
 function mockEditTodo(cy, retval, alias) {
-  cy.intercept("PUT", "/todos", retval).as(alias);
+  cy.intercept("PUT", "/api/todos", retval).as(alias);
 }
 function mockDeleteTodo(cy, retval, alias) {
-  cy.intercept("DELETE", "/todos", retval).as(alias);
+  cy.intercept("DELETE", "/api/todos", retval).as(alias);
 }
 
 describe("Todo Application", () => {

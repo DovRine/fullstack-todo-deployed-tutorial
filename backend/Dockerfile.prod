@@ -1,0 +1,12 @@
+FROM node:16
+
+WORKDIR /app
+
+COPY ./.env /.env
+COPY ./backend/package.json .
+COPY ./backend/yarn.lock .
+COPY ./backend/src /app/src
+
+RUN yarn install
+
+CMD yarn start
