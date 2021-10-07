@@ -25,11 +25,6 @@ async function doFetch(method = "get", requestData, callback) {
 
 function TodoProvider({ children, values }) {
   const [todos, setTodos] = useState([]);
-  function listTodos() {
-    fetch("http://localhost/api/todos")
-      .then((res) => res.json())
-      .then((todos) => setTodos(todos));
-  }
   useEffect(() => {
     listTodos();
   }, []);
@@ -41,6 +36,9 @@ function TodoProvider({ children, values }) {
   }
   function editTodo(todo) {
     doFetch("put", todo, () => listTodos());
+  }
+  function listTodos() {
+    doFetch("get", null, (todos) => setTodos(todos));
   }
   function toggleTodo(todo) {
     todo.done = !todo.done;
